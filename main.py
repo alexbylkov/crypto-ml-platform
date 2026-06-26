@@ -1,15 +1,22 @@
 import sys
-from app.market_data.bybit import get_price
+from app.market_data.get_market_data import get_price
+from app.candles.get_candles import get_candles
 
 def main():
-    if len(sys.argv) != 2:
-        print("Использование: uv run main.py <symbol>")
+
+    actions = {
+        'price': get_price,
+        'candles': get_candles,
+    } 
+
+    if len(sys.argv) != 3 or sys.argv[1] not in ('price', 'candles'):
+        print("Using: uv run main.py <'price' | 'candles'> <symbol>")
         sys.exit(1) 
 
-    symbol = sys.argv[1]
-    price = get_price(symbol)
+    _, action, symbol = sys.argv
+    response = actions.get(action)(symbol)
     
-    print(f'{symbol}: {price}')
+    print(symbol, response)
 
 if __name__ == "__main__":
     main()
